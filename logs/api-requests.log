@@ -1,0 +1,7 @@
+2025-05-20 08:58:50.178 [main] WARN  rest.RestApiClient - Request failed with exception: Cannot invoke method log() on null object, attempt 1/4
+2025-05-20 08:58:50.178 [main] DEBUG rest.RestApiClient - Retrying after 200ms
+2025-05-20 08:58:50.380 [main] WARN  rest.RestApiClient - Request failed with exception: Cannot invoke method log() on null object, attempt 2/4
+2025-05-20 08:58:50.380 [main] DEBUG rest.RestApiClient - Retrying after 400ms
+2025-05-20 08:58:50.782 [main] WARN  rest.RestApiClient - Request failed with exception: Cannot invoke method log() on null object, attempt 3/4
+2025-05-20 08:58:50.782 [main] DEBUG rest.RestApiClient - Retrying after 800ms
+2025-05-20 08:58:51.583 [main] WARN  rest.RestApiClient - Request failed with exception: Cannot invoke method log() on null object, attempt 4/4

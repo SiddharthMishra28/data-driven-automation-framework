@@ -1,0 +1,62 @@
+[
+  {
+    "id": 1,
+    "name": "John Doe",
+    "username": "johndoe",
+    "email": "john.doe@example.com",
+    "phone": "555-1234",
+    "address": {
+      "street": "123 Main St",
+      "city": "Boston",
+      "zipcode": "02108"
+    }
+  },
+  {
+    "id": 2,
+    "name": "Jane Smith",
+    "username": "janesmith",
+    "email": "jane.smith@example.com",
+    "phone": "555-5678",
+    "address": {
+      "street": "456 Oak Ave",
+      "city": "Chicago",
+      "zipcode": "60601"
+    }
+  },
+  {
+    "id": 3,
+    "name": "Bob Johnson",
+    "username": "bjohnson",
+    "email": "bob.johnson@example.com",
+    "phone": "555-9012",
+    "address": {
+      "street": "789 Pine Blvd",
+      "city": "Seattle",
+      "zipcode": "98101"
+    }
+  },
+  {
+    "id": 4,
+    "name": "Alice Brown",
+    "username": "abrown",
+    "email": "alice.brown@example.com",
+    "phone": "555-3456",
+    "address": {
+      "street": "321 Cedar Ln",
+      "city": "Denver",
+      "zipcode": "80202"
+    }
+  },
+  {
+    "id": 5,
+    "name": "Charlie Davis",
+    "username": "cdavis",
+    "email": "charlie.davis@example.com",
+    "phone": "555-7890",
+    "address": {
+      "street": "654 Birch St",
+      "city": "Atlanta",
+      "zipcode": "30303"
+    }
+  }
+]
