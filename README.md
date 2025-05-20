@@ -6,7 +6,8 @@ A scalable, modular, and configurable Java-based test automation framework built
 
 - **REST API Testing**: Fluent interface for API requests using Rest Assured
 - **Database Validation**: Integration with Azure Cosmos DB and MS SQL Server
-- **Rich Assertions**: Custom assertion library for API responses
+- **Rich Assertions**: Custom assertion library for API responses and Spark datasets
+- **Apache Spark Testing**: Comprehensive data validation and transformation testing
 - **Data-Driven Testing**: CSV, JSON, and Database resultset support for parameterized tests
 - **Reporting**: Detailed HTML reports using Allure Framework
 - **Configuration Management**: Environment-specific configurations
@@ -146,6 +147,58 @@ Response response = getApiClient().get("/users/{id}")
 
 - `header(String name, String value)` - Add a header
 - `headers(Map<String, String> headers)` - Add multiple headers
+
+### Apache Spark Testing
+
+#### Local File Operations
+```java
+// Initialize Spark client
+SparkClient sparkClient = new SparkClient();
+
+// Load and transform data
+Dataset<Row> sourceData = sparkClient.readCsv("data.csv");
+```
+
+#### Azure Data Lake Storage (ADLS) Operations
+```java
+// Initialize Spark client with ADLS configuration
+SparkClient sparkClient = new SparkClient();
+sparkClient.configureADLS("your-storage-account", "your-access-key");
+
+// Read different file formats from ADLS
+Dataset<Row> csvData = sparkClient.readFromADLS("container", "path/to/file.csv", "csv");
+Dataset<Row> jsonData = sparkClient.readFromADLS("container", "path/to/file.json", "json");
+Dataset<Row> parquetData = sparkClient.readFromADLS("container", "path/to/file.parquet", "parquet");
+Dataset<Row> textData = sparkClient.readFromADLS("container", "path/to/file.txt", "text");
+
+// Write data to ADLS
+sparkClient.writeToADLS(transformedData, "container", "path/to/output.parquet", "parquet");
+```
+
+The framework supports reading and writing various file formats from Azure Data Lake Storage Gen2:
+- CSV files with header inference
+- JSON and JSON-LD files with multiline support
+- Parquet files
+- Plain text files
+
+Files are accessed using the abfss:// protocol with storage account credentials.
+Dataset<Row> transformedData = SparkTransformations.cleanseData(sourceData);
+
+// Assert results
+SparkAssertions.assertRowCount(transformedData, expectedCount);
+SparkAssertions.assertColumnExists(transformedData, "category");
+SparkAssertions.assertColumnValueEquals(transformedData, "amount", 1000.0);
+
+// Compare datasets
+Dataset<Row> expectedData = sparkClient.readParquet("expected.parquet");
+SparkAssertions.assertDatasetEquals(expectedData, transformedData);
+
+// Aggregate data
+Dataset<Row> aggregated = SparkTransformations.aggregateByColumn(
+    transformedData, "category", "amount", "sum"
+);
+```
+
 - `queryParam(String name, String value)` - Add a query parameter
 - `queryParams(Map<String, String> params)` - Add multiple query parameters
 - `pathParam(String name, String value)` - Add a path parameter

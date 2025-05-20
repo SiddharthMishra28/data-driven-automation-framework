@@ -9,6 +9,8 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.spark.sql.Dataset;
+import org.apache.spark.sql.Row;
 
 import java.io.File;
 import java.io.FileReader;
@@ -32,6 +34,7 @@ import java.util.stream.StreamSupport;
 public class DataProviderUtils {
     private static final Logger logger = LogManager.getLogger(DataProviderUtils.class);
     private static final ObjectMapper objectMapper = new ObjectMapper();
+    private static final SparkClient sparkClient = new SparkClient();
     
     /**
      * Private constructor to prevent instantiation
@@ -146,4 +149,44 @@ public class DataProviderUtils {
         }
         return data;
     }
+
+    /**
+     * Validate batch file data against database records
+     *
+     * @param batchFilePath Path to the batch file
+     * @param sqlClient SqlClient instance
+     * @param query SQL query to fetch comparison data
+     * @return boolean indicating if data matches
+     */
+    public static boolean validateBatchFileAgainstDatabase(String batchFilePath, SqlClient sqlClient, String query) {
+        logger.info("Validating batch file against database: {}", batchFilePath);
+        
+        try {
+            // Read batch file based on extension
+            Dataset<Row> batchData;
+            if (batchFilePath.endsWith(".csv")) {
+                batchData = sparkClient.readCsv(batchFilePath);
+            } else if (batchFilePath.endsWith(".json")) {
+                batchData = sparkClient.readJson(batchFilePath);
+            } else if (batchFilePath.endsWith(".parquet")) {
+                batchData = sparkClient.readParquet(batchFilePath);
+            } else {
+                throw new IllegalArgumentException("Unsupported file format");
+            }
+
+            // Get database data
+            List<Map<String, Object>> dbResults = sqlClient.executeQuery(query);
+            Dataset<Row> dbData = sparkClient.convertSqlResultToDataframe(dbResults);
+
+            // Compare datasets
+            boolean matches = sparkClient.compareDataframes(batchData, dbData);
+            logger.info("Batch file validation result: {}", matches ? "MATCH" : "MISMATCH");
+            return matches;
+
+        } catch (Exception e) {
+            logger.error("Error validating batch file: {}", e.getMessage(), e);
+            throw new RuntimeException("Failed to validate batch file", e);
+        }
+    }
+
 }
